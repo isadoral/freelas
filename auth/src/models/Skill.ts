@@ -1,5 +1,4 @@
 import mongoose from "mongoose"
-import { Password } from "../services/password";
 
 // @ADR
 // Context: We need TypeScript to know the properties that are required to create a new Skill
@@ -73,14 +72,6 @@ const skillSchema = new mongoose.Schema({
             delete ret.__v;
         }
     }
-});
-
-skillSchema.pre("save", async function(done){
-    if (this.isModified("password")) {
-        const hashed = await Password.toHash(this.get("password"));
-        this.set("password", hashed);
-    }
-    done();
 });
 
 skillSchema.statics.build = (attrs: SkillAttributes) => {
