@@ -5,6 +5,8 @@ import { validateRequest, BadRequestError } from "@izzietx/common"
 
 import { HiringManager } from "../models/HiringManager";
 import { Company } from "../models/Company";
+import { sendTokenEmail } from "../services/SendEmail";
+import { generateToken } from "../services/Token";
 
 const router = express.Router();
 
@@ -39,6 +41,9 @@ router.post("/api/users/hiringmanager",
             }
         }
 
+        const token = generateToken()
+        const userType = "hiringManager"
+
         const user = HiringManager.build({
             company: company,
             email: email,
@@ -46,9 +51,14 @@ router.post("/api/users/hiringmanager",
             firstName: firstName,
             lastName: lastName,
             password: password,
-            userType: "hiringManager"
+            userType: userType,
+            token: token
         })
         await user.save();
+
+        const name = firstName + " " + lastName
+
+        sendTokenEmail(email, name, token, userType, "Confirm Email")
 
         // Generate JWT
         const userJwt = jwt.sign({

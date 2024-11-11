@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken"
 import { validateRequest, BadRequestError } from "@izzietx/common"
 
 import {Freela } from "../models/Freela";
+import { generateToken } from "../services/Token";
+import { sendTokenEmail } from "../services/SendEmail";
 
 const router = express.Router();
 
@@ -28,6 +30,9 @@ router.post("/api/users/registerfreela",
             throw new BadRequestError("Email already in use");
         }
 
+        const token = generateToken()
+        const userType = "freela";
+
         const user = Freela.build({
             birthDate: birthDate,
             country: country,
@@ -41,9 +46,14 @@ router.post("/api/users/registerfreela",
             password: password,
             personalWebsite: personalWebsite,
             statement: statement,
-            userType: "freela"
+            userType: userType,
+            token: token
         })
         await user.save();
+
+        const name = firstName + " " + lastName
+
+        sendTokenEmail(email, name, token, userType, "Confirm Email")
 
         // Generate JWT
         const userJwt = jwt.sign({

@@ -1,9 +1,11 @@
 import express, { Request, Response } from "express";
 import { body } from "express-validator";
-import jwt from "jsonwebtoken"
-import { validateRequest, BadRequestError } from "@izzietx/common"
+import jwt from "jsonwebtoken";
+import { validateRequest, BadRequestError } from "@izzietx/common";
 
 import { Company } from "../models/Company";
+import { generateToken } from "../services/Token";
+import { sendTokenEmail } from "../services/SendEmail";
 
 const router = express.Router();
 
@@ -20,7 +22,19 @@ router.post("/api/users/registercompany",
     ],
     validateRequest,
     async (req: Request, res: Response) => {
-        const { email, password, name, address, countries, description, billingEmail, hiringManagers, logo, extra, website } = req.body;
+        const {
+            email,
+            password,
+            name,
+            address,
+            countries,
+            description,
+            billingEmail,
+            hiringManagers,
+            logo,
+            extra,
+            website
+        } = req.body;
 
         const existingCompany = await Company.findOne({ email });
 
@@ -28,8 +42,17 @@ router.post("/api/users/registercompany",
             throw new BadRequestError("Email already in use");
         }
 
+        const token = generateToken();
+        const userType = "company";
+
         const user = Company.build({
-            address: { city: address.city, country: address.country, number: address.number, street: address.street, zipcode: address.zipcode },
+            address: {
+                city: address.city,
+                country: address.country,
+                number: address.number,
+                street: address.street,
+                zipcode: address.zipcode
+            },
             billingEmail: billingEmail,
             countries: countries,
             description: description,
@@ -40,10 +63,13 @@ router.post("/api/users/registercompany",
             logo: logo,
             name: name,
             password: password,
-            userType: "company",
-            website: website
-        })
+            userType: userType,
+            website: website,
+            token: token
+        });
         await user.save();
+
+        sendTokenEmail(email, name, token, userType, "Confirm Email");
 
         // Generate JWT
         const userJwt = jwt.sign({
