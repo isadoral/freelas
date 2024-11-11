@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { Password } from "../services/password";
+import { Password } from "../services/Password";
 
 // @ADR
 // Context: We need TypeScript to know the properties that are required to create a new User
@@ -120,6 +120,7 @@ const freelaSchema = new mongoose.Schema({
             ret.id = ret._id;
             delete ret._id;
             delete ret.password;
+            delete ret.token;
             delete ret.__v;
         }
     }
