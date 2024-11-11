@@ -61,6 +61,10 @@ const hiringManagerSchema = new mongoose.Schema({
     token: {
         type: String,
     },
+    userType: {
+        type: String,
+        required: true,
+    },
     firstName: {
         type: String,
         required: true,
