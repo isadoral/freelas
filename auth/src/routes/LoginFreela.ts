@@ -3,7 +3,7 @@ import { body } from "express-validator";
 import jwt from "jsonwebtoken";
 import { validateRequest, BadRequestError } from "@izzietx/common";
 
-import { Password } from "../services/password";
+import { Password } from "../services/Password";
 import { Freela } from "../models/Freela";
 
 const router = express.Router();
@@ -34,6 +34,10 @@ router.post("/api/users/loginfreela",
 
         if (!passwordsMatch) {
             throw new BadRequestError("Invalid Credentials");
+        }
+
+        if (existingFreela.emailConfirmed === false) {
+            res.status(403).send({message: "Email not verified"})
         }
 
         // Generate JWT
