@@ -18,6 +18,7 @@ import { changePasswordRouter } from "./routes/ChangePassword";
 import { changePasswordTokenRouter } from "./routes/ChangePasswordToken";
 import { hiringManagerRouter } from "./routes/HiringManager";
 import { companyRouter } from "./routes/Company";
+import { freelaRouter } from "./routes/Freela";
 
 const app = express();
 app.set("trust proxy", true);
@@ -43,6 +44,7 @@ app.use(changePasswordRouter);
 app.use(changePasswordTokenRouter);
 app.use(hiringManagerRouter);
 app.use(companyRouter)
+app.use(freelaRouter)
 
 app.all("*", async (req, res) => {
     throw new NotFoundError();
