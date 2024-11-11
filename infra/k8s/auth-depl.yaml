@@ -21,6 +21,16 @@ spec:
                 secretKeyRef:
                   name: jwt-secret
                   key: JWT_KEY
+            - name: MAILJET_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mailjet-api-key
+                  key: MAILJET_API_KEY
+            - name: MAILJET_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: mailjet-api-secret
+                  key: MAILJET_SECRET_KEY
             - name: MONGO_URI
               value: "mongodb://auth-mongo-srv:27017/auth"
 
