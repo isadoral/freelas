@@ -10,7 +10,7 @@ import { generateToken } from "../services/Token";
 
 const router = express.Router();
 
-router.post("/api/users/hiringmanager",
+router.post("/api/users/registerhiringmanager",
     [
 
         body("email")
@@ -31,7 +31,7 @@ router.post("/api/users/hiringmanager",
             throw new BadRequestError("Email already in use");
         }
 
-        const validCompany = await Company.findOne({name: company})
+        const validCompany = await Company.findOne({email: company})
         if (!validCompany) {
             throw new BadRequestError("Company not registerd");
         }
