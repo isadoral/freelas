@@ -24,7 +24,7 @@ router.post("/api/users/loginHiringManager",
 
         const existingHiringManager = await HiringManager.findOne({ email });
         if (!existingHiringManager) {
-            throw new BadRequestError("Invalid Credentials");
+            throw new BadRequestError("Email not found");
         }
 
         const passwordsMatch = await Password.compare(
@@ -36,9 +36,9 @@ router.post("/api/users/loginHiringManager",
             throw new BadRequestError("Invalid Credentials");
         }
 
-        if (existingHiringManager.emailConfirmed === false) {
-            res.status(403).send({message: "Email not verified"})
-        }
+        // if (existingHiringManager.emailConfirmed === false) {
+        //     res.status(403).send({message: "Email not verified"})
+        // }
 
         // Generate JWT
         const userJwt = jwt.sign({
