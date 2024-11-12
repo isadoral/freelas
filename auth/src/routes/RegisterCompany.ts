@@ -69,7 +69,7 @@ router.post("/api/users/registercompany",
         });
         await user.save();
 
-        sendTokenEmail(email, name, token, userType, "Confirm Email");
+        // sendTokenEmail(email, name, token, userType, "Confirm Email");
 
         // Generate JWT
         const userJwt = jwt.sign({

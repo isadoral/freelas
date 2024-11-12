@@ -53,7 +53,7 @@ router.post("/api/users/registerfreela",
 
         const name = firstName + " " + lastName
 
-        sendTokenEmail(email, name, token, userType, "Confirm Email")
+        // sendTokenEmail(email, name, token, userType, "Confirm Email")
 
         // Generate JWT
         const userJwt = jwt.sign({
