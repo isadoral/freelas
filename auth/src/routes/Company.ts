@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 
 import { requireAuth } from "@izzietx/common";
-import { BadRequestError } from "@izzietx/common/build";
+import { BadRequestError, currentUser } from "@izzietx/common/build";
 import { Company } from "../models/Company";
 
 const router = express.Router();
@@ -20,10 +20,9 @@ router.get("/api/users/company", async (req: Request, res: Response) => {
     res.status(200).send(company);
 });
 
-router.patch("/api/users/company", requireAuth, async (req: Request, res: Response) => {
+router.patch("/api/users/company", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const {
-        address,
         countries,
         description,
         billingEmail,
@@ -33,13 +32,6 @@ router.patch("/api/users/company", requireAuth, async (req: Request, res: Respon
     } = req.body;
 
     const company = await Company.findOneAndUpdate({ email: user }, {
-        address: {
-            city: address.city,
-            country: address.country,
-            number: address.number,
-            street: address.street,
-            zipcode: address.zipcode
-        },
         billingEmail: billingEmail,
         countries: countries,
         description: description,
@@ -48,14 +40,10 @@ router.patch("/api/users/company", requireAuth, async (req: Request, res: Respon
         website: website,
     });
 
-    if (!company) {
-        throw new BadRequestError("Only Companies can delete hiring managers.");
-    }
-
-    res.status(201);
+    res.status(201).send(company);
 });
 
-router.delete("/api/users/skill", requireAuth, async (req: Request, res: Response) => {
+router.delete("/api/users/company", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
 
     await Company.findOneAndDelete({ email: user });
