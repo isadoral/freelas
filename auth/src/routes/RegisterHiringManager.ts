@@ -7,6 +7,7 @@ import { HiringManager } from "../models/HiringManager";
 import { Company } from "../models/Company";
 import { sendTokenEmail } from "../services/SendEmail";
 import { generateToken } from "../services/Token";
+import { generateUserJwt } from "../services/JWT";
 
 const router = express.Router();
 
@@ -60,13 +61,7 @@ router.post("/api/users/registerhiringmanager",
 
         sendTokenEmail(email, name, token, userType, "Confirm Email")
 
-        // Generate JWT
-        const userJwt = jwt.sign({
-                id: user.id,
-                email: user.email
-            },
-            process.env.JWT_KEY!
-        );
+        const userJwt = generateUserJwt(user.id, user.email, user.company)
 
         // Store it on session object
         req.session = {

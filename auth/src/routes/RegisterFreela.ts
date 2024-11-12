@@ -6,6 +6,7 @@ import { validateRequest, BadRequestError } from "@izzietx/common"
 import {Freela } from "../models/Freela";
 import { generateToken } from "../services/Token";
 import { sendTokenEmail } from "../services/SendEmail";
+import { generateUserJwt } from "../services/JWT";
 
 const router = express.Router();
 
@@ -55,13 +56,7 @@ router.post("/api/users/registerfreela",
 
         sendTokenEmail(email, name, token, userType, "Confirm Email")
 
-        // Generate JWT
-        const userJwt = jwt.sign({
-                id: user.id,
-                email: user.email
-            },
-            process.env.JWT_KEY!
-        );
+        const userJwt = generateUserJwt(user.id, user.email, "freela")
 
         // Store it on session object
         req.session = {
