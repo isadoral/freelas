@@ -8,7 +8,7 @@ import { Skill } from "../models/Skill";
 const router = express.Router();
 
 
-router.post("/api/users/skill", requireAuth, async (req: Request, res: Response) => {
+router.post("/api/users/skill", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const { domain, topic, tag, link, description, price } = req.body;
 
@@ -59,7 +59,7 @@ router.get("/api/skills", async (req: Request, res: Response) => {
     res.status(200).send(skills);
 });
 
-router.patch("/api/users/skill", requireAuth, async (req: Request, res: Response) => {
+router.patch("/api/users/skill", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const { tag, link, description, price } = req.body;
 
@@ -77,7 +77,7 @@ router.patch("/api/users/skill", requireAuth, async (req: Request, res: Response
     res.status(201).send(skill);
 });
 
-router.delete("/api/users/skill", requireAuth, async (req: Request, res: Response) => {
+router.delete("/api/users/skill", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const { tag } = req.body;
 
