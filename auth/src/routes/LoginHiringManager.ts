@@ -5,6 +5,7 @@ import { validateRequest, BadRequestError } from "@izzietx/common";
 
 import { Password } from "../services/Password";
 import { HiringManager } from "../models/HiringManager";
+import { generateUserJwt } from "../services/JWT";
 
 const router = express.Router();
 
@@ -41,12 +42,7 @@ router.post("/api/users/loginHiringManager",
         // }
 
         // Generate JWT
-        const userJwt = jwt.sign({
-                id: existingHiringManager.id,
-                email: existingHiringManager.email
-            },
-            process.env.JWT_KEY!
-        );
+        const userJwt = generateUserJwt(existingHiringManager.id, existingHiringManager.email, existingHiringManager.company)
 
         // Store it on session object
         req.session = {

@@ -5,6 +5,7 @@ import { validateRequest, BadRequestError} from "@izzietx/common";
 
 import { Password } from "../services/Password";
 import { Company } from "../models/Company";
+import { generateUserJwt } from "../services/JWT";
 
 const router = express.Router();
 
@@ -40,13 +41,7 @@ router.post("/api/users/logincompany",
         //     res.status(403).send({message: "Email not verified"})
         // }
 
-        // Generate JWT
-        const userJwt = jwt.sign({
-                id: existingCompany.id,
-                email: existingCompany.email
-            },
-            process.env.JWT_KEY!
-        );
+        const userJwt = generateUserJwt(existingCompany.id, existingCompany.email, "company")
 
         // Store it on session object
         req.session = {
