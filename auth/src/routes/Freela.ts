@@ -39,7 +39,7 @@ router.patch("/api/users/freela", currentUser, requireAuth, async (req: Request,
     res.status(201).send(freela);
 });
 
-router.delete("/api/users/freela", currentUser,  requireAuth, async (req: Request, res: Response) => {
+router.delete("/api/users/freela", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
 
     await Freela.findOneAndDelete({ email: user });
