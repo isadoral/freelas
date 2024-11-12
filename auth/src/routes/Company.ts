@@ -23,7 +23,6 @@ router.get("/api/users/company", async (req: Request, res: Response) => {
 router.patch("/api/users/company", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const {
-        address,
         countries,
         description,
         billingEmail,
@@ -33,13 +32,6 @@ router.patch("/api/users/company", currentUser, requireAuth, async (req: Request
     } = req.body;
 
     const company = await Company.findOneAndUpdate({ email: user }, {
-        address: {
-            city: address.city,
-            country: address.country,
-            number: address.number,
-            street: address.street,
-            zipcode: address.zipcode
-        },
         billingEmail: billingEmail,
         countries: countries,
         description: description,
