@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 
 import { requireAuth } from "@izzietx/common";
 import { Freela } from "../models/Freela";
+import { currentUser } from "@izzietx/common/build";
 
 const router = express.Router();
 
@@ -20,7 +21,7 @@ router.get("/api/users/freela", async (req: Request, res: Response) => {
     res.status(200).send(freela);
 });
 
-router.patch("/api/users/freela", requireAuth, async (req: Request, res: Response) => {
+router.patch("/api/users/freela", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const { firstName, lastName, country, github, linkedin, nationality, personalWebsite, statement } = req.body;
 
@@ -38,7 +39,7 @@ router.patch("/api/users/freela", requireAuth, async (req: Request, res: Respons
     res.status(201).send(freela);
 });
 
-router.delete("/api/users/freela", requireAuth, async (req: Request, res: Response) => {
+router.delete("/api/users/freela", currentUser,  requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
 
     await Freela.findOneAndDelete({ email: user });

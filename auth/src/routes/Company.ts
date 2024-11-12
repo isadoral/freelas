@@ -1,7 +1,7 @@
 import express, { Request, Response } from "express";
 
 import { requireAuth } from "@izzietx/common";
-import { BadRequestError } from "@izzietx/common/build";
+import { BadRequestError, currentUser } from "@izzietx/common/build";
 import { Company } from "../models/Company";
 
 const router = express.Router();
@@ -20,7 +20,7 @@ router.get("/api/users/company", async (req: Request, res: Response) => {
     res.status(200).send(company);
 });
 
-router.patch("/api/users/company", requireAuth, async (req: Request, res: Response) => {
+router.patch("/api/users/company", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
     const {
         address,
@@ -55,7 +55,7 @@ router.patch("/api/users/company", requireAuth, async (req: Request, res: Respon
     res.status(201);
 });
 
-router.delete("/api/users/skill", requireAuth, async (req: Request, res: Response) => {
+router.delete("/api/users/company", currentUser, requireAuth, async (req: Request, res: Response) => {
     const user = req.currentUser!.email;
 
     await Company.findOneAndDelete({ email: user });
