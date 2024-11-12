@@ -5,14 +5,25 @@
   "main": "index.js",
   "scripts": {
     "start": "ts-node-dev --poll src/index.ts",
-    "test": "jest --watchAll --no-cache"
+    "test": "jest --watchAll --no-cache --silent=false"
   },
   "jest": {
     "preset": "ts-jest",
     "testEnvironment": "node",
     "setupFilesAfterEnv": [
       "./src/test/setup.ts"
-    ]
+    ],
+    "moduleDirectories": [
+      "node_modules",
+      "src"
+    ],
+    "rootDir": "./",
+    "modulePaths": [
+      "<rootDir>"
+    ],
+    "moduleNameMapper": {
+      "src/(.*)": "<rootDir>/$1"
+    }
   },
   "keywords": [],
   "author": "",
@@ -29,6 +40,7 @@
     "express-validator": "^7.0.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.0",
+    "node-mailjet": "^6.0.6",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.3.3"
   },
