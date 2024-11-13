@@ -12,13 +12,13 @@ router.patch("/api/users/changepassword", async (req: Request, res: Response) =>
     const { password } = req.body()
 
     if (userType === "company") {
-        Company.findOneAndUpdate({ token: token }, { password: password });
+        await Company.findOneAndUpdate({ token: token }, { password: password });
         res.status(200)
     } else if (userType === "hiringManager") {
-        HiringManager.findOneAndUpdate({ token: token }, { password: password });
+        await HiringManager.findOneAndUpdate({ token: token }, { password: password });
         res.status(200)
     } else if (userType === "freela") {
-        Freela.findOneAndUpdate({ token: token }, { password: password });
+        await Freela.findOneAndUpdate({ token: token }, { password: password });
         res.status(200)
     } else {
         throw new BadRequestError("User token not found")
