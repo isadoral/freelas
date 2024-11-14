@@ -1,0 +1,13 @@
+name: tests-jobs
+
+on:
+  pull_request:
+    paths:
+      - "jobs/**"
+
+jobs:
+  build:
+    runs-on: ububtu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: cd jobs && npm install && npm run test:ci
