@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - "jobs/**"
+      - "infra/**"
   workflow_dispatch:
     inputs:
       logLevel:
@@ -20,12 +20,8 @@ on:
           - critical
 
 jobs:
-  build-push-gcr:
-    name: Build and Push to GCP
+  build:
     runs-on: ubuntu-latest
-    env:
-      IMAGE_NAME: izziee/jobs
-      PROJECT_ID: freelas-441721
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -41,18 +37,12 @@ jobs:
           project_id: ${{ env.PROJECT_ID }}
           install_components: "gke-cloud-auth-plugin"
 
-      - name: Build Docker Image
-        run: cd jobs && docker build -t $IMAGE_NAME:latest .
-
-      - name: Configure Docker Client
+      - name: Apply Kubernetes Manifests
         run: |-
-            gcloud auth configure-docker --quiet
-            gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
-
-      - name: Push Docker Image to Artifact Registry
-        env:
-          GIT_TAG: ${{ steps.increment-git-tag.outputs.git-tag }}
-        run: |-
-          docker tag $IMAGE_NAME:latest europe-west1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:latest
-          docker push europe-west1-docker.pkg.dev/$PROJECT_ID/images/$IMAGE_NAME:latest
-          kubectl rollout restart deployment jobs-depl
+          gcloud components install kubectl
+          gcloud components install gke-gcloud-auth-plugin
+          gcloud container clusters get-credentials freelas-cluster-1 \
+          --region=eu-west1
+          kubectl apply -f infra/k8s
+          
+    
