@@ -59,7 +59,7 @@ jobs:
         with:
           cluster_name: "freelas-cluster-1"
           project_id: "freelas-441721"
-          location: "eu-west1"
+          location: "eu-west1-a"
 
       - name: Deploy to GKE
         run: |-
