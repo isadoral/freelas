@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       IMAGE_NAME: izziee/jobs
-      PROJECT_ID: ${{ secrets.GCLOUD_PROJECT }}
+      PROJECT_ID: freelas-441721
     steps:
       - name: Checkout
         uses: actions/checkout@v3
