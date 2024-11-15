@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ububtu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: cd jobs && npm install && npm run test:ci
