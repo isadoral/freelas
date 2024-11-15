@@ -1,4 +1,4 @@
-name: Build and Deploy to GKE - Jobs
+name: Build and Deploy to GKE infra
 
 on:
   push:
