@@ -75,7 +75,7 @@ router.get("/api/jobs/freelajobs", async (req: Request, res: Response) => {
 router.get("/api/jobs/job", async (req: Request, res: Response) => {
     const jobId = req.query.jobId;
 
-    const job = await Job.findById({ jobId });
+    const job = await Job.findById({ _id: jobId });
 
     res.status(200).send(job);
 });

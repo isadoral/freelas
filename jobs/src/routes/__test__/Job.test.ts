@@ -2,26 +2,6 @@ import request from "supertest";
 import { app } from "../../app";
 import mongoose from "mongoose";
 import { Job } from "../../models/Job";
-
-const createJob = async (cookie: string[]) => {
-    return await request(app)
-        .post("/api/jobs/job")
-        .set("Cookie", cookie)
-        .send({
-            projectName: "Test Project",
-            domain: "Web Development",
-            topic: "Frontend",
-            tag: "React",
-            description: "Test description",
-            timeline: {
-                startDate: new Date(),
-                endDate: new Date(Date.now() + 86400000),
-            },
-            budget: 1000,
-            extras: "No extras",
-        });
-};
-
 describe("Jobs Router", () => {
     const jobData = {
         projectName: "Test Project",
