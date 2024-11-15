@@ -40,11 +40,7 @@ router.patch("/api/users/company", currentUser, requireAuth, async (req: Request
         website: website,
     });
 
-    if (!company) {
-        throw new BadRequestError("Only Companies can delete hiring managers.");
-    }
-
-    res.status(201);
+    res.status(201).send(company);
 });
 
 router.delete("/api/users/company", currentUser, requireAuth, async (req: Request, res: Response) => {

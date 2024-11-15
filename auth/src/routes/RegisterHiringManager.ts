@@ -35,6 +35,7 @@ router.post("/api/users/registerhiringmanager",
         const validCompany = await Company.findOne({email: company})
         if (!validCompany) {
             throw new BadRequestError("Company not registerd");
+
         }
         if (validCompany.hiringManagers) {
             if (!validCompany.hiringManagers.includes(email)) {
@@ -59,7 +60,7 @@ router.post("/api/users/registerhiringmanager",
 
         const name = firstName + " " + lastName
 
-        sendTokenEmail(email, name, token, userType, "Confirm Email")
+        // sendTokenEmail(email, name, token, userType, "Confirm Email")
 
         const userJwt = generateUserJwt(user.id, user.email, user.company)
 

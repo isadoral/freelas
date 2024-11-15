@@ -37,9 +37,9 @@ router.post("/api/users/logincompany",
             throw new BadRequestError("Invalid Credentials");
         }
 
-        if (existingCompany.emailConfirmed === false) {
-            res.status(403).send({message: "Email not verified"})
-        }
+        // if (existingCompany.emailConfirmed === false) {
+        //     res.status(403).send({message: "Email not verified"})
+        // }
 
         const userJwt = generateUserJwt(existingCompany.id, existingCompany.email, "company")
 

@@ -1,16 +1,19 @@
 import Mailjet, { Client } from "node-mailjet";
 import { BadRequestError } from "@izzietx/common/build";
 
-let mailjet:Client;
+let mailjet: Client;
 
-if (process.env.env !== "dev") {
-     mailjet = Mailjet.apiConnect(
+if(process.env.MAILJET_API_KEY) {
+    mailjet = Mailjet.apiConnect(
         process.env.MAILJET_API_KEY!,
         process.env.MAILJET_SECRET_KEY!,
     );
 }
 
 export const sendTokenEmail = (email: string, name: string, token: string, userType: string, action: string) => {
+    if (process.env.env === "dev") {
+        return;
+    }
 
     let link = "";
     let subject = "";
@@ -34,7 +37,7 @@ export const sendTokenEmail = (email: string, name: string, token: string, userT
             " >Change Password</a><br/> <p>If you didn't request to change your password please get in contact with our support team.</p>";
 
     } else {
-        throw new BadRequestError("Something went wrong")
+        throw new BadRequestError("Something went wrong");
     }
 
     const request = mailjet

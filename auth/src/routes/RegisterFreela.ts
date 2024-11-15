@@ -54,7 +54,7 @@ router.post("/api/users/registerfreela",
 
         const name = firstName + " " + lastName
 
-        sendTokenEmail(email, name, token, userType, "Confirm Email")
+        // sendTokenEmail(email, name, token, userType, "Confirm Email")
 
         const userJwt = generateUserJwt(user.id, user.email, "freela")
 

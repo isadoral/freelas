@@ -37,9 +37,9 @@ router.post("/api/users/loginfreela",
             throw new BadRequestError("Invalid Credentials");
         }
 
-        if (existingFreela.emailConfirmed === false) {
-            res.status(403).send({message: "Email not verified"})
-        }
+        // if (existingFreela.emailConfirmed === false) {
+        //     res.status(403).send({message: "Email not verified"})
+        // }
 
         const userJwt = generateUserJwt(existingFreela.id, existingFreela.email, "freela")
 
