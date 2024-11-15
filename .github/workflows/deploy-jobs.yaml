@@ -58,6 +58,7 @@ jobs:
         uses: google-github-actions/get-gke-credentials@v2
         with:
           cluster_name: freelas-cluster-1
+          project_id: freelas-441721
           location: eu-west1
 
       - name: Deploy to GKE
