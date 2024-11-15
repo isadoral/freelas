@@ -57,8 +57,8 @@ jobs:
       - name: Get GKE Credentials
         uses: google-github-actions/get-gke-credentials@v2
         with:
-          cluster_name: ${{ env.GKE_CLUSTER }}
-          location: ${{ env.GKE_ZONE }}
+          cluster_name: freelas-cluster-1
+          location: eu-west1
 
       - name: Deploy to GKE
         run: |-
