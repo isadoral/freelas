@@ -1,11 +1,11 @@
-name: Build and Deploy to GKE - Auth
+name: Build and Deploy to GKE - Jobs
 
 on:
   push:
     branches:
       - main
     paths:
-      - "auth/**"
+      - "jobs/**"
 
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
@@ -14,7 +14,7 @@ env:
   GKE_CLUSTER: freelas-cluster-1
   GKE_ZONE: eu-central-1
   DEPLOYMENT_NAME: gke-test
-  IMAGE: izziee/auth
+  IMAGE: izziee/jobs
 
 jobs:
   setup-build-publish-deploy:
