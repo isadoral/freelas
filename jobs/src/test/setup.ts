@@ -5,11 +5,11 @@ import request from "supertest";
 import jwt from "jsonwebtoken";
 
 declare global {
-    var signin: () => string[];
+    var signinFreela: () => string[];
 }
 
 declare global {
-    var signin: () => string[];
+    var signinCompany: () => string[];
 }
 
 let mongo: any;
@@ -37,7 +37,7 @@ afterAll(async () => {
     await mongoose.connection.close();
 });
 
-global.signin =  () => {
+global.signinFreela =  () => {
     // Build a JWT payload, { id, email }
     const payload = {
         id: new mongoose.Types.ObjectId().toHexString(),
@@ -60,11 +60,11 @@ global.signin =  () => {
     return [`session=${base64}`];
 };
 
-global.signin =  () => {
+global.signinCompany =  () => {
     // Build a JWT payload, { id, email }
     const payload = {
         id: new mongoose.Types.ObjectId().toHexString(),
-        email: "test@test.com",
+        email: "test@company.com",
         userType: "company"
     }
 
