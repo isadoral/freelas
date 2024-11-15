@@ -35,13 +35,17 @@ jobs:
       - uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
+          
+      - name: Get GKE Credentials
+        uses: google-github-actions/get-gke-credentials@v2
+        with:
+          cluster_name: "freelas-cluster-1"
+          project_id: "freelas-441721"
+          location: "europe-west1"
+
 
       - name: Apply Kubernetes Manifests
-        run: |-
-          gcloud components install kubectl
-          gcloud components install gke-gcloud-auth-plugin
-          gcloud container clusters get-credentials freelas-cluster-1 \
-          --region=eu-west1
+        run: |-    
           kubectl apply -f infra/k8s
           
     
