@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 
 import { currentUser, requireAuth, requireAuthCompany, BadRequestError } from "@izzietx/common";
 import { Job } from "../models/Job";
+import { NotAuthorisedError } from "@izzietx/common/build";
 
 
 const router = express.Router();
@@ -23,7 +24,7 @@ router.post("/api/jobs/job", currentUser, requireAuth, requireAuthCompany, async
         tag: tag,
     };
 
-    const jobExists = await Job.findOne({ company: company, projectName: projectName, skill: tag });
+    const jobExists = await Job.findOne({ company: company, projectName: projectName, skill: skill });
     if (jobExists) {
         throw new BadRequestError("Job already exists");
     }
@@ -91,16 +92,21 @@ router.patch("/api/jobs/job", currentUser, requireAuth, requireAuthCompany, asyn
         company = userType;
     }
 
-    const job = await Job.findOne({ id: jobId, company: company });
+    const job = await Job.findById({ _id: jobId });
     if (!job) {
         throw new BadRequestError("Job not found.");
     }
+    if(job.company != company) {
+        throw new NotAuthorisedError()
+    }
 
-    const jobUpdate = await Job.findOneAndUpdate({ id: jobId, company: company }, {
+    await Job.findByIdAndUpdate({ _id: jobId }, {
         description: description,
         budget: budget,
         extras: extras,
-    });
+    })
+
+    const jobUpdate = await Job.findById({ _id: jobId });
 
     res.status(201).send(jobUpdate);
 });
@@ -117,12 +123,15 @@ router.patch("/api/jobs/finalisejob", currentUser, requireAuth, requireAuthCompa
         company = userType;
     }
 
-    const job = await Job.findOne({ id: jobId, company: company });
+    const job = await Job.findById({ _id: jobId });
     if (!job) {
         throw new BadRequestError("Job not found.");
     }
+    if(job.company != company) {
+        throw new NotAuthorisedError()
+    }
 
-    const jobUpdate = await Job.findByIdAndUpdate({ jobId }, {
+    await Job.findByIdAndUpdate({ _id: jobId }, {
         freela: freela,
         finalPrice: finalPrice,
         timeline: {
@@ -131,45 +140,63 @@ router.patch("/api/jobs/finalisejob", currentUser, requireAuth, requireAuthCompa
         },
     });
 
+    const jobUpdate = await Job.findById({ _id: jobId });
+
+        res.status(201).send(jobUpdate);
+});
+
+router.patch("/api/jobs/start", currentUser, requireAuth, requireAuthCompany, async (req: Request, res: Response) => {
+    const user = req.currentUser!.email;
+    const userType = req.currentUser!.userType;
+    const jobId = req.query.jobId;
+    let company = user;
+
+    if (userType !== "company") {
+        company = userType;
+    }
+
+    const job = await Job.findById({ _id: jobId });
+    if (!job) {
+        throw new BadRequestError("Job not found.");
+    }
+    if(job.company != company) {
+        throw new NotAuthorisedError()
+    }
+
+    await Job.findByIdAndUpdate({ _id: jobId }, {
+        status: "In Progress"
+    });
+
+    const jobUpdate = await Job.findById({ _id: jobId });
+
     res.status(201).send(jobUpdate);
 });
 
-router.patch("/api/jobs/start", async (req: Request, res: Response) => {
+router.patch("/api/jobs/end", currentUser, requireAuth, requireAuthCompany, async (req: Request, res: Response) => {
+    const user = req.currentUser!.email;
+    const userType = req.currentUser!.userType;
     const jobId = req.query.jobId;
+    let company = user;
 
-    const job = await Job.findById({ jobId });
+    if (userType !== "company") {
+        company = userType;
+    }
+
+    const job = await Job.findById({ _id: jobId });
     if (!job) {
         throw new BadRequestError("Job not found.");
     }
-
-    if (!job.finalPrice) {
-        throw new BadRequestError("Something went wrong");
+    if(job.company != company) {
+        throw new NotAuthorisedError()
     }
 
-    const jobUpdate = await Job.findByIdAndUpdate({ jobId }, {
-        status: "In Progress",
+    await Job.findByIdAndUpdate({ _id: jobId }, {
+        status: "Completed"
     });
 
-    res.status(201);
-});
+    const jobUpdate = await Job.findById({ _id: jobId });
 
-router.patch("/api/jobs/end", async (req: Request, res: Response) => {
-    const jobId = req.query.jobId;
-
-    const job = await Job.findById({ jobId });
-    if (!job) {
-        throw new BadRequestError("Job not found.");
-    }
-
-    if (!job.finalPrice) {
-        throw new BadRequestError("Something went wrong");
-    }
-
-    const jobUpdate = await Job.findByIdAndUpdate({ jobId }, {
-        status: "Completed",
-    });
-
-    res.status(201);
+    res.status(201).send(jobUpdate);
 });
 
 router.delete("/api/jobs/job", currentUser, requireAuth, requireAuthCompany, async (req: Request, res: Response) => {
