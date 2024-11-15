@@ -32,11 +32,11 @@ jobs:
 
       - id: auth
         name: Authenticate to Google Cloud
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.GKE_SA_KEY }}
 
-      - uses: google-github-actions/setup-gcloud@v0
+      - uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: ${{ env.PROJECT_ID }}
 
@@ -47,11 +47,11 @@ jobs:
         id: increment-git-tag
         run: |
           bash ./scripts/git_update.sh -v major
-
-      - name: Configure Docker Client
-        run: |-
-          gcloud auth configure-docker --quiet
-          gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
+          
+          - name: Configure Docker Client
+          run: |-
+            gcloud auth configure-docker --quiet
+            gcloud auth configure-docker europe-west3-docker.pkg.dev --quiet
 
       - name: Push Docker Image to Artifact Registry
         env:
@@ -80,16 +80,16 @@ jobs:
       - name: 'deploy with gke-deploy cli'
         uses: 'google-github-actions/deploy-gke-container@v0.1'
         with:
-          image: 'my-image'
-          app_name: 'my-app'
-          region: 'us-central1'
-          cluster_name: 'my-cluster'
-          project_id: 'my-project'
-          namespace: 'my-namespace'
+          image: europe-west1-docker.pkg.dev/$PROJECT_ID/images/izziee/jobs:latest
+          app_name: 'freelas'
+          region: 'eu-west1'
+          cluster_name: 'freelas-cluster-1'
+          project_id: $PROJECT_ID
+          namespace: 'freelas-jobs'
           expose: '8000'
 
       - name: 'get-deployments'
         shell: bash
         run: |
-          kubectl get pods -n my-namespace
-          kubectl get deployment -n my-namespace
+          kubectl get pods -n freelas-jobs
+          kubectl get deployment -n freelas-jobs
